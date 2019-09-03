@@ -20,7 +20,6 @@ func (r OfficeWordRenderer) GetRendererId() string {
 func (r OfficeWordRenderer) Render(dbi *inspector.DBInspector, params string, outfile string) error {
 
 	doc := document.New()
-
 	para := doc.AddParagraph()
 	para.SetStyle("Title")
 	para.AddRun().AddText("Data Dict")
@@ -47,8 +46,12 @@ func (r OfficeWordRenderer) Render(dbi *inspector.DBInspector, params string, ou
 			titleRow := table.AddRow()
 			for _, title := range tableTitleValues {
 				cell := titleRow.AddCell()
+				cell.Properties().Borders().SetAll(wml.ST_BorderSingle, color.Gray, 1)
 				cell.Properties().SetShading(wml.ST_ShdSolid, color.LightGray, color.Auto)
-				cell.AddParagraph().AddRun().AddText(title)
+				r := cell.AddParagraph().AddRun()
+				r.Properties().SetBold(true)
+				r.Properties().SetSize(10)
+				r.AddText(title)
 			}
 
 			for rIdx, cd := range tbl.Columns {
@@ -56,11 +59,14 @@ func (r OfficeWordRenderer) Render(dbi *inspector.DBInspector, params string, ou
 
 				for _, value := range cd.GetRenderValues(renderFieldsIdx) {
 					cell := row.AddCell()
+					cell.Properties().Borders().SetAll(wml.ST_BorderSingle, color.Gray, 1)
 					if rIdx%2 == 0 {
 						cell.Properties().SetShading(wml.ST_ShdSolid, veryLightGray, color.Auto)
 					}
 
-					cell.AddParagraph().AddRun().AddText(fmt.Sprintln(value))
+					r := cell.AddParagraph().AddRun()
+					r.Properties().SetSize(10)
+					r.AddText(fmt.Sprintln(value))
 				}
 			}
 		}
