@@ -48,6 +48,9 @@ func (cd ColumnDesc) GetRenderFields() []string {
 	return renderFieldsIdx
 }
 
+const NullValue = "<nil>"
+const EmptyValue = " "
+
 func (cd ColumnDesc) GetRenderValues(fieldsOrder []string) []interface{} {
 	v := reflect.ValueOf(cd)
 
@@ -58,16 +61,41 @@ func (cd ColumnDesc) GetRenderValues(fieldsOrder []string) []interface{} {
 		fvt := fv.Type()
 		switch fvt.String() {
 		case "sql.NullString":
-			renderFields = append(renderFields, fv.Interface().(sql.NullString).String)
+			d := fv.Interface().(sql.NullString)
+			if d.Valid {
+				if len(d.String) == 0 {
+					renderFields = append(renderFields, EmptyValue)
+				} else {
+					renderFields = append(renderFields, d.String)
+				}
+
+			} else {
+				renderFields = append(renderFields, NullValue)
+			}
 			break
 		case "sql.NullBool":
-			renderFields = append(renderFields, fv.Interface().(sql.NullBool).Bool)
+			d := fv.Interface().(sql.NullBool)
+			if d.Valid {
+				renderFields = append(renderFields, d.Bool)
+			} else {
+				renderFields = append(renderFields, NullValue)
+			}
 			break
 		case "sql.NullInt64":
-			renderFields = append(renderFields, fv.Interface().(sql.NullInt64).Int64)
+			d := fv.Interface().(sql.NullInt64)
+			if d.Valid {
+				renderFields = append(renderFields, d.Int64)
+			} else {
+				renderFields = append(renderFields, NullValue)
+			}
 			break
 		case "sql.NullFloat64":
-			renderFields = append(renderFields, fv.Interface().(sql.NullFloat64).Float64)
+			d := fv.Interface().(sql.NullFloat64)
+			if d.Valid {
+				renderFields = append(renderFields, d.Float64)
+			} else {
+				renderFields = append(renderFields, NullValue)
+			}
 			break
 		default:
 			log.Fatalln("unknown type", fvt.String())

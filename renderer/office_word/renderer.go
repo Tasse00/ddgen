@@ -20,6 +20,7 @@ func (r OfficeWordRenderer) GetRendererId() string {
 func (r OfficeWordRenderer) Render(dbi *inspector.DBInspector, params string, outfile string) error {
 
 	doc := document.New()
+
 	para := doc.AddParagraph()
 	para.SetStyle("Title")
 	para.AddRun().AddText("Data Dict")
@@ -46,9 +47,14 @@ func (r OfficeWordRenderer) Render(dbi *inspector.DBInspector, params string, ou
 			titleRow := table.AddRow()
 			for _, title := range tableTitleValues {
 				cell := titleRow.AddCell()
+				cell.Properties().Margins().SetLeft(2)
+				cell.Properties().Margins().SetBottom(2)
+				cell.Properties().Margins().SetRight(2)
+				cell.Properties().Margins().SetTop(2)
 				cell.Properties().Borders().SetAll(wml.ST_BorderSingle, color.Gray, 1)
 				cell.Properties().SetShading(wml.ST_ShdSolid, color.LightGray, color.Auto)
 				r := cell.AddParagraph().AddRun()
+
 				r.Properties().SetBold(true)
 				r.Properties().SetSize(10)
 				r.AddText(title)
@@ -56,9 +62,12 @@ func (r OfficeWordRenderer) Render(dbi *inspector.DBInspector, params string, ou
 
 			for rIdx, cd := range tbl.Columns {
 				row := table.AddRow()
-
 				for _, value := range cd.GetRenderValues(renderFieldsIdx) {
 					cell := row.AddCell()
+					cell.Properties().Margins().SetLeft(2)
+					cell.Properties().Margins().SetBottom(2)
+					cell.Properties().Margins().SetRight(2)
+					cell.Properties().Margins().SetTop(2)
 					cell.Properties().Borders().SetAll(wml.ST_BorderSingle, color.Gray, 1)
 					if rIdx%2 == 0 {
 						cell.Properties().SetShading(wml.ST_ShdSolid, veryLightGray, color.Auto)

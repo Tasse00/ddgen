@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 )
 
 // 一次渲染操作
@@ -53,9 +54,11 @@ func (ddr *DDRender) Render() {
 	if !ok {
 		panic(fmt.Sprintln("invalid render type", ddr.RenderType))
 	}
+	log.Printf("use renderer '%s'", renderer.GetRendererId())
 
 	err := renderer.Render(ddr.Inspector, ddr.Params, ddr.OutFile)
 	if err != nil {
 		panic(err)
 	}
+	log.Println("OK.")
 }
