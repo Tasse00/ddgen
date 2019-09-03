@@ -1,0 +1,6 @@
+# proj
+dist
+go.sum
+
+# ide
+.idea
