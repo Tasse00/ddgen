@@ -64,7 +64,17 @@ func (r Renderer) Render(dbi *inspector.DBInspector, params string, outfile stri
 		return err
 	}
 
-	return tmpl.Execute(os.Stdout, dbi.Schemas)
+	f, err := os.Create(outfile)
+	if err != nil {
+		return nil
+	}
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			panic(err)
+		}
+	}()
+	return tmpl.Execute(f, dbi.Schemas)
 }
 
 func init() {
