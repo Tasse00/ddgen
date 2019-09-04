@@ -1,8 +1,8 @@
 package renderer
 
 import (
-	"ddgen/common"
-	"ddgen/utils"
+	"github.com/Tasse00/ddgen/common"
+	"github.com/Tasse00/ddgen/utils"
 )
 
 // 渲染器

@@ -1,15 +1,15 @@
 package main
 
 import (
-	"ddgen/common"
-	"ddgen/inspector"
-	_ "ddgen/inspector/mysql5.7"
-	"ddgen/renderer"
-	_ "ddgen/renderer/markdown"
-	_ "ddgen/renderer/office_word"
-	"ddgen/utils"
 	"errors"
 	"fmt"
+	"github.com/Tasse00/ddgen/common"
+	"github.com/Tasse00/ddgen/inspector"
+	_ "github.com/Tasse00/ddgen/inspector/mysql5.7"
+	"github.com/Tasse00/ddgen/renderer"
+	_ "github.com/Tasse00/ddgen/renderer/markdown"
+	_ "github.com/Tasse00/ddgen/renderer/office_word"
+	"github.com/Tasse00/ddgen/utils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/urfave/cli"
 	"log"

@@ -1,4 +1,4 @@
-module ddgen
+module github.com/Tasse00/ddgen
 
 go 1.12
 

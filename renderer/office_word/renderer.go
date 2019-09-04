@@ -1,9 +1,9 @@
 package office_word
 
 import (
-	"ddgen/common"
-	"ddgen/renderer"
 	"fmt"
+	"github.com/Tasse00/ddgen/common"
+	"github.com/Tasse00/ddgen/renderer"
 	"github.com/unidoc/unioffice/color"
 	"github.com/unidoc/unioffice/document"
 	"github.com/unidoc/unioffice/schema/soo/wml"

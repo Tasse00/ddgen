@@ -1,9 +1,9 @@
 package markdown
 
 import (
-	"ddgen/common"
-	"ddgen/renderer"
 	"fmt"
+	"github.com/Tasse00/ddgen/common"
+	"github.com/Tasse00/ddgen/renderer"
 	"html/template"
 	"log"
 	"os"

@@ -2,9 +2,9 @@ package mysql5_7
 
 import (
 	"database/sql"
-	"ddgen/common"
-	"ddgen/inspector"
 	"fmt"
+	"github.com/Tasse00/ddgen/common"
+	"github.com/Tasse00/ddgen/inspector"
 	"log"
 )
 
