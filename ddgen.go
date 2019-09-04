@@ -2,29 +2,30 @@ package main
 
 import (
 	"ddgen/inspector"
+	_ "ddgen/inspector/mysql5.7"
 	"ddgen/utils"
-	"encoding/json"
 	"flag"
 	_ "github.com/go-sql-driver/mysql"
-	"io/ioutil"
 	"log"
 	"strings"
 )
 
 var genArgs = struct {
-	dbDri   string
+	insId   string
 	dbSrc   string
 	outFile string
-	schemas string
+	schema  string
 	h       bool
+	params  string
 }{}
 
 func init() {
 	flag.BoolVar(&genArgs.h, "h", false, "show this help")
-	flag.StringVar(&genArgs.dbDri, "D", "mysql", "database driver")
+	flag.StringVar(&genArgs.insId, "i", "mysql5.7", "inspector")
 	flag.StringVar(&genArgs.dbSrc, "S", "", "database source")
-	flag.StringVar(&genArgs.schemas, "s", "", "schemas to export dd")
+	flag.StringVar(&genArgs.schema, "s", "", "schema to export dd")
 	flag.StringVar(&genArgs.outFile, "o", "dat.json", "output data file (json)")
+	flag.StringVar(&genArgs.params, "p", "", "params pass to inspector.")
 }
 
 func main() {
@@ -36,33 +37,24 @@ func main() {
 		return
 	}
 
-	validDbDrivers := []string{"mysql"}
-	if !utils.ContainsString(validDbDrivers, strings.ToLower(genArgs.dbDri)) {
-		log.Fatalf("db drivers must in %s", strings.Join(validDbDrivers, ","))
+	validDbDrivers := inspector.GlobalRendererRepository.GetInspectorIds()
+	if !utils.ContainsString(validDbDrivers, strings.ToLower(genArgs.insId)) {
+		log.Fatalf("inspector must in %s", strings.Join(validDbDrivers, ","))
 		return
 	}
 
-	//dbSrc := "root:root@tcp(127.0.0.1:32768)/information_schema?charset=utf8"
-
-	dbi := inspector.CreateDBInspector(genArgs.dbDri, genArgs.dbSrc)
-
-	// 排除schema
-	dbi.SchemasOnly = strings.Split(genArgs.schemas, ",")
-
-	dbi.Initialize()
-	defer dbi.Destroy()
-
-	dbi.InspectSchemas()
-
-	b, err := json.Marshal(dbi)
-
+	ins, err := inspector.GlobalRendererRepository.Get(genArgs.insId)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("user inspector: %s with params: %s", (*ins).GetInspectorId(), genArgs.params)
+	ss, err := (*ins).Inspect(genArgs.dbSrc, genArgs.schema, genArgs.params)
 	if err != nil {
 		panic(err)
 	}
 
-	err = ioutil.WriteFile(genArgs.outFile, b, 0644)
+	err = ss.SaveToFile(genArgs.outFile)
 	if err != nil {
 		panic(err)
 	}
-
 }
