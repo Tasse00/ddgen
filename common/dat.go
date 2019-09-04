@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"reflect"
 )
 
 // ColumnSpec 列定义
@@ -31,12 +32,12 @@ type TableSpec struct {
 }
 
 // GetColumns 获取当前表的所有字段定义
-func (ts *TableSpec) GetColumns() []ColumnSpec {
+func (ts TableSpec) GetColumns() []ColumnSpec {
 	return ts.Columns
 }
 
 // GetColumn 以字段名获取当前表的某一字段定义
-func (ts *TableSpec) GetColumn(field string) (*ColumnSpec, error) {
+func (ts TableSpec) GetColumn(field string) (*ColumnSpec, error) {
 	for _, cs := range ts.Columns {
 		if cs.Name == field {
 			return &cs, nil
@@ -65,12 +66,12 @@ type SchemaSpec struct {
 }
 
 // GetTables 获取当前库的所有表定义
-func (ss *SchemaSpec) GetTables() []TableSpec {
+func (ss SchemaSpec) GetTables() []TableSpec {
 	return ss.Tables
 }
 
 // GetTable 以表名名获取当前库的某一表定义
-func (ss *SchemaSpec) GetTable(name string) (*TableSpec, error) {
+func (ss SchemaSpec) GetTable(name string) (*TableSpec, error) {
 	for _, ts := range ss.Tables {
 		if ts.Name == name {
 			return &ts, nil
@@ -110,4 +111,25 @@ func (ss *SchemaSpec) SaveToFile(filename string) error {
 		return err
 	}
 	return ioutil.WriteFile(filename, b, 0644)
+}
+
+// 获取列定义中默认用于渲染到列属的的字段
+func (ts *TableSpec) GetDefaultSpecRenderFields() []string {
+	ssT := reflect.TypeOf(ColumnSpec{})
+	fieldsNum := ssT.NumField()
+	fields := make([]string, fieldsNum)
+	for i := 0; i < fieldsNum; i++ {
+		fields[i] = ssT.Field(i).Name
+	}
+	return fields
+}
+
+func (cs *ColumnSpec) GetSpecRenderFieldsValue(fields []string) []string {
+	csV := reflect.ValueOf(cs).Elem()
+	values := make([]string, len(fields))
+	for i, f := range fields {
+		fv := csV.FieldByName(f)
+		values[i] = fv.String()
+	}
+	return values
 }

@@ -58,4 +58,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	log.Println("OK.")
 }

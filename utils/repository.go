@@ -27,6 +27,7 @@ func (r *Repository) Register(com Component) {
 }
 
 func (r *Repository) Get(insId string) (Component, error) {
+	log.Printf("get component: %s", insId)
 	if component, ok := r.components[insId]; !ok {
 		return nil, errors.New(fmt.Sprintf("invalid inspectorId %s", insId))
 	} else {
