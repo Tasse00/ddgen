@@ -16,7 +16,7 @@ type Inspector struct {
 	db       *sql.DB
 }
 
-func (i Inspector) GetInspectorId() string {
+func (i Inspector) GetComponentId() string {
 	return i.id
 }
 

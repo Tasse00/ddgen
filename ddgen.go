@@ -37,7 +37,7 @@ func main() {
 		return
 	}
 
-	validDbDrivers := inspector.GlobalRendererRepository.GetInspectorIds()
+	validDbDrivers := inspector.GlobalRendererRepository.GetComponentIds()
 	if !utils.ContainsString(validDbDrivers, strings.ToLower(genArgs.insId)) {
 		log.Fatalf("inspector must in %s", strings.Join(validDbDrivers, ","))
 		return
@@ -47,8 +47,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("user inspector: %s with params: %s", (*ins).GetInspectorId(), genArgs.params)
-	ss, err := (*ins).Inspect(genArgs.dbSrc, genArgs.schema, genArgs.params)
+
+	log.Printf("user inspector: %s with params: %s", ins.GetComponentId(), genArgs.params)
+	ss, err := ins.(inspector.Inspector).Inspect(genArgs.dbSrc, genArgs.schema, genArgs.params)
 	if err != nil {
 		panic(err)
 	}
