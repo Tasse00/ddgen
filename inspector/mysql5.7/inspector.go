@@ -51,7 +51,7 @@ func (i Inspector) Inspect(dbSrc string, schema string, params string) (*common.
 		DefaultCollation:    "",
 	}
 
-	querySql := fmt.Sprintf("select DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME from schemata where SCHEMA_NAME='%s'", schema)
+	querySql := fmt.Sprintf("select DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME from information_schema.schemata where SCHEMA_NAME='%s'", schema)
 	var defaultCharacterSet, defaultCollation sql.NullString
 	err = i.db.QueryRow(querySql).Scan(&defaultCharacterSet, &defaultCollation)
 
@@ -75,7 +75,7 @@ func (i Inspector) Inspect(dbSrc string, schema string, params string) (*common.
 
 	// inspect tables
 
-	rows, err := i.db.Query(fmt.Sprintf("select TABLE_NAME, TABLE_COMMENT, TABLE_COLLATION from tables  where TABLE_SCHEMA='%s'", schema))
+	rows, err := i.db.Query(fmt.Sprintf("select TABLE_NAME, TABLE_COMMENT, TABLE_COLLATION from information_schema.tables  where TABLE_SCHEMA='%s'", schema))
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (i Inspector) Inspect(dbSrc string, schema string, params string) (*common.
 		// inspect columns in table
 		log.Printf("-* inspected table %s", ts.Name)
 
-		rows, err := i.db.Query(fmt.Sprintf("select COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, CHARACTER_SET_NAME, COLLATION_NAME, COLUMN_TYPE, COLUMN_KEY,EXTRA,COLUMN_COMMENT from columns where TABLE_SCHEMA='%s' and TABLE_NAME='%s'", schema, ts.Name))
+		rows, err := i.db.Query(fmt.Sprintf("select COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, CHARACTER_SET_NAME, COLLATION_NAME, COLUMN_TYPE, COLUMN_KEY,EXTRA,COLUMN_COMMENT from information_schema.columns where TABLE_SCHEMA='%s' and TABLE_NAME='%s'", schema, ts.Name))
 		if err != nil {
 			log.Printf("query table %s columns failed %s", ts.Name, err)
 			continue
